@@ -4,15 +4,18 @@ import authController from "./routes/auth/authController";
 import dotenv from "dotenv";
 
 import { tokenAuthHandler } from "./lib/auth";
+import cors from "./lib/cors";
 
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT;
+
+app.use(cors);
 app.use(express.json());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log("oi");
+  console.log(res.getHeaders());
 
   next();
 });
