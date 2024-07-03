@@ -1,25 +1,23 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import scriptController from "./routes/script-gen/scriptController";
+import authController from "./routes/auth/authController";
 import dotenv from "dotenv";
+
+import { tokenAuthHandler } from "./lib/auth";
 
 dotenv.config();
 
-// Boot express
 const app: Application = express();
 const PORT = process.env.PORT;
 app.use(express.json());
 
-// App Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.use("/login", authController);
+app.use("/script", tokenAuthHandler, scriptController);
 
-//Routes
-app.use("/script", scriptController);
-
-// Start server
-app.listen(PORT, () => console.log(`Server is listening on PORT: ${PORT}!`));
+app.listen(PORT);
 
 export default app;

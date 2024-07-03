@@ -1,0 +1,22 @@
+import express from "express";
+import { generateAccessToken } from "../../lib/auth";
+
+const router = express.Router();
+
+router.post("/", (req, res) => {
+  const { key } = req.body;
+
+  if (key !== process.env.API_KEY) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const accessToken = generateAccessToken({ key });
+
+  if (!accessToken) {
+    return res.status(500).send("Internal Server Error");
+  }
+
+  return res.json({ accessToken });
+});
+
+export default router;
