@@ -18,6 +18,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).send(":)");
+});
+
 app.use("/auth", authController);
 app.use("/script", tokenAuthHandler, scriptController);
 

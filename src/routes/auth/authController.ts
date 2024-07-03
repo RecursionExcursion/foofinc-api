@@ -6,8 +6,6 @@ const router = express.Router();
 router.get("/", (req, res) => {
   const key = req.headers["x-api-key"];
 
-  console.log({ key});
-  
   if (key !== process.env.API_KEY) {
     return res.status(401).send("Unauthorized");
   }
