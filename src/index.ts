@@ -12,10 +12,12 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log("oi");
+
   next();
 });
 
-app.use("/login", authController);
+app.use("/auth", authController);
 app.use("/script", tokenAuthHandler, scriptController);
 
 app.listen(PORT);

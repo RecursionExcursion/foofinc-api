@@ -3,9 +3,8 @@ import { generateAccessToken } from "../../lib/auth";
 
 const router = express.Router();
 
-router.post("/", (req, res) => {
-  const { key } = req.body;
-
+router.get("/", (req, res) => {
+  const key = req.headers["x-api-key"];
   if (key !== process.env.API_KEY) {
     return res.status(401).send("Unauthorized");
   }
