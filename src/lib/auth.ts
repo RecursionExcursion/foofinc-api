@@ -1,18 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 
+const getEnvSecret = () => process.env.JWT_TOKEN_SECRET;
+
 export const tokenAuthHandler = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-
+  
   if (!token) return res.status(401).send("Unauthorized");
-
-  const secret = process.env.JWT_TOKEN_SECRET;
-
+  
+  const secret = getEnvSecret();
   if (!secret) return res.status(500).send("Internal Server Error");
 
   jwt.verify(token, secret, (err) => {
@@ -31,7 +33,8 @@ export const tokenAuthHandler = (
 };
 
 export const generateAccessToken = (obj: object) => {
-  const secret = process.env.JWT_TOKEN_SECRET;
+  const secret = getEnvSecret();
+
   if (!secret) {
     return null;
   }

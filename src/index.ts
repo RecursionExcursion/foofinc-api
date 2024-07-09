@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import { tokenAuthHandler } from "./lib/auth";
 import cors from "./lib/cors";
+import { servePage } from "./lib/pageServer";
 
 dotenv.config();
 
@@ -19,7 +20,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.get("/", (req: Request, res: Response) => {
-  res.status(200).send(":)");
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  token
+    ? servePage({ page: "/home-auth.html", res })
+    : servePage({ page: "/home-no-auth.html", res });
 });
 
 app.use("/auth", authController);
