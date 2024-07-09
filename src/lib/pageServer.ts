@@ -7,6 +7,6 @@ type ServerPageParams = {
 };
 
 export const servePage = ({ page, res }: ServerPageParams) => {
-  const pagePath = path.join(process.cwd(), "src/pages" + page);
+  const pagePath = path.join(process.cwd(), "pages", page);
   res.sendFile(pagePath);
 };
