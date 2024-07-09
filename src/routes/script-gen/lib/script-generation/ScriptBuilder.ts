@@ -1,8 +1,8 @@
 import { Extension } from "../../types/extension";
 import Script from "./Script";
 import {
+  actionImports,
   addPackageJsonScripts,
-  executors,
   installDependencies,
   installDevDependencies,
 } from "./scriptGenHelpers";
@@ -21,22 +21,32 @@ export class ScriptBuilder {
 
   constructor() {
     this._script = new Script();
-
-    this._script.addLine("#!/bin/bash");
-    this._script.addLine(executors());
+    this._script.addLine(actionImports());
   }
 
   addExtension = (extension: Extension) => this.extensions.push(extension);
 
-  addScript = (name: string, script: string) => this.scripts.set(name, script);
+  addScript = (script: { key: string; value: string }) => {
+    this.scripts.set(script.key, script.value);
+  };
 
-  addDependency = (...dependencies: string[]) =>
+  addScriptMap = (scriptMap: Map<string, string>) => {
+    Object.entries(scriptMap).forEach(([key, value]) => {
+      this.scripts.set(key, value);
+    });
+  };
+
+  addDependencies = (...dependencies: string[]) => {
     this.dependencies.push(...dependencies);
+  };
 
-  addDevDependency = (...devDependencies: string[]) =>
+  addDevDependencies = (...devDependencies: string[]) => {
     this.devDependencies.push(...devDependencies);
+  };
 
-  addLine = (line: string) => this.lines.push(line);
+  addLine = (line: string) => {
+    this.lines.push(line);
+  };
 
   build() {
     this.mapExtensionsToFields(this.extensions);
@@ -62,6 +72,18 @@ export class ScriptBuilder {
       Object.getOwnPropertyDescriptors(script)
     );
 
+    console.log({ extensions });
+
+    extensions.sort((a, b) => {
+      const priorityA =
+        a.priority !== undefined ? a.priority : Number.MAX_SAFE_INTEGER;
+      const priorityB =
+        b.priority !== undefined ? b.priority : Number.MAX_SAFE_INTEGER;
+      return priorityA - priorityB;
+    });
+
+    console.log({ extensions });
+
     const isBeforeDependencies = (priority: number | undefined) => {
       if (!priority) return false;
       priority <= dependencyPriority;
@@ -70,6 +92,8 @@ export class ScriptBuilder {
     extensions
       .filter((extension) => isBeforeDependencies(extension.priority))
       .forEach((extension) => {
+        console.log("writing", extension.script);
+
         if (extension.script) scriptCopy.addLine(extension.script);
       });
 

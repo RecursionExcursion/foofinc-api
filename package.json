@@ -11,7 +11,9 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node build/index.js",
-    "vercel-build": ""
+    "vercel-build": "",
+    "lint": "npx eslint . --no-cache --debug",
+    "lint-no-cache": "npx eslint ."
   },
   "dependencies": {
     "cors": "^2.8.5",

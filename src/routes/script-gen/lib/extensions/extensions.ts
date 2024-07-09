@@ -1,7 +1,11 @@
 import { PRE_SCRIPTS } from "../../constants/paths";
 import { Extension } from "../../types/extension";
-import transcriber from "../script-generation/transcriber";
 import fs from "fs";
+import {
+  createDir,
+  execute,
+  writeFile,
+} from "../script-generation/actions/scriptActions";
 
 type ExtensionParams = {
   priority?: number;
@@ -9,7 +13,7 @@ type ExtensionParams = {
 
 const node = (params?: ExtensionParams): Extension => {
   return {
-    script: transcriber.execute("npm init -y"),
+    script: execute("npm init -y"),
     priority: params?.priority,
   };
 };
@@ -25,7 +29,7 @@ const eslint = (params: ParamsWithTs): Extension => {
 
   const additionalExecutions = [];
   additionalExecutions.push(
-    transcriber.writeFile(
+    writeFile(
       ".eslintignore",
       `node_modules
       build`
@@ -33,7 +37,7 @@ const eslint = (params: ParamsWithTs): Extension => {
   );
 
   return {
-    script: transcriber.execute("npm init @eslint/config"),
+    script: execute("npm init @eslint/config"),
     devDependencies,
     additionalExecutions,
     priority: params?.priority,
@@ -42,10 +46,10 @@ const eslint = (params: ParamsWithTs): Extension => {
 
 const tsc = (params?: ExtensionParams): Extension => {
   return {
-    script: transcriber.execute("npx tsc --init"),
+    script: execute("npx tsc --init"),
     priority: params?.priority,
     additionalExecutions: [
-      transcriber.writeFile(
+      writeFile(
         "./tsconfig.json",
         fs.readFileSync(PRE_SCRIPTS + "/files/express/tsconfig.json", "utf8")
       ),
@@ -63,7 +67,7 @@ const env = (
     .join("\n");
 
   return {
-    script: transcriber.writeFile(".env", vars),
+    script: writeFile(".env", vars),
     priority: params?.priority,
   };
 };
@@ -84,7 +88,7 @@ const express = (params: ParamsWithTs): Extension => {
 
 const gitIgnore = (params?: ExtensionParams): Extension => {
   return {
-    script: transcriber.writeFile(
+    script: writeFile(
       ".gitignore",
       fs.readFileSync(PRE_SCRIPTS + "/files/express/gitIgnore.txt", "utf8")
     ),
@@ -94,7 +98,7 @@ const gitIgnore = (params?: ExtensionParams): Extension => {
 
 const nodemon = (params?: ExtensionParams): Extension => {
   return {
-    script: transcriber.writeFile(
+    script: writeFile(
       "nodemon.json",
       fs.readFileSync(PRE_SCRIPTS + "/files/express/nodemon.json", "utf8")
     ),
@@ -105,7 +109,7 @@ const nodemon = (params?: ExtensionParams): Extension => {
 
 const srcDir = (params?: ExtensionParams): Extension => {
   return {
-    script: transcriber.createDir("./src"),
+    script: createDir("./src"),
     priority: params?.priority,
   };
 };

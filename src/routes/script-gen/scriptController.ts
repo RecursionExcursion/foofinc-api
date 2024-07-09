@@ -1,6 +1,7 @@
 import express from "express";
 import scriptService from "./scriptService";
 import info from "./constants/info";
+import { ScriptRequest } from "./types/scriptRequest";
 
 const router = express.Router();
 
@@ -13,16 +14,18 @@ router.get("/info", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { type } = req.body;
+  const scriptRequest = req.body as ScriptRequest;
 
-  if (!type) return res.status(400).send("Invalid script type");
+  const { success, fileData, additionalData } =
+    scriptService.generateScript(scriptRequest);
 
-  const { script, fileName } = scriptService.generateScript(type);
+  if (!success) {
+    return res
+      .status(400)
+      .send(`Expected body format - ${JSON.stringify(additionalData)}`);
+  }
 
-  return res.send({
-    script,
-    fileName,
-  });
+  return res.send(JSON.stringify(fileData));
 });
 
 export default router;

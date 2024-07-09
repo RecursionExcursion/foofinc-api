@@ -1,18 +1,14 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es2015",
         "module": "commonjs",
+        "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "./build",
-        "rootDir": "./src",
-        /* Strict Type-Checking Options */
         "strict": true,
         "noImplicitAny": true,
-        /* Module Resolution Options */
-        "moduleResolution": "node",
         "baseUrl": "./src",
         "esModuleInterop": true,
-        /* Advanced Options */
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
@@ -20,7 +16,8 @@
         "es2015"
     ],
     "include": [
-        "src/**/*"
+        "src/**/*",
+        // "pre-scripts/actionImports.js"
     ],
     "exclude": [
         "node_modules"

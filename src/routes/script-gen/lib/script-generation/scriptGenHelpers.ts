@@ -1,10 +1,15 @@
 import fs from "fs";
 import Script from "./Script";
-import transcriber from "./transcriber";
 import { PRE_SCRIPTS } from "../../constants/paths";
+import { execute } from "./actions/scriptActions";
 
-export const executors = () =>
-  fs.readFileSync(PRE_SCRIPTS + "/executors.cjs", "utf8");
+export const actionImports = () => {
+  return fs.readFileSync(PRE_SCRIPTS + "/actionImports.cjs", "utf8");
+};
+
+export const executors = () => {
+  return fs.readFileSync(PRE_SCRIPTS + "/executors.cjs", "utf8");
+};
 
 export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
   const script = new Script();
@@ -16,14 +21,16 @@ export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
           ]);`;
 
   script.addLine(scriptsString);
+  //Script to add scripts to package.json
   script.addLine(fs.readFileSync(PRE_SCRIPTS + "/addScripts.cjs", "utf8"));
+  //Calling the script-generation logic in the script
   script.addLine("addScripts(scripts);");
 
   return script;
 };
 
 export const installDependencies = (dependencies: string[]) =>
-  transcriber.execute(`npm i -S ${dependencies.join(" ")}`);
+  execute(`npm i -S ${dependencies.join(" ")}`);
 
 export const installDevDependencies = (devDependencies: string[]) =>
-  transcriber.execute(`npm i -D ${devDependencies.join(" ")}`);
+  execute(`npm i -D ${devDependencies.join(" ")}`);

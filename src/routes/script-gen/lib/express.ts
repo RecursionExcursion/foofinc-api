@@ -1,8 +1,8 @@
-import transcriber from "./script-generation/transcriber";
 import extensions from "./extensions/extensions";
 import { ScriptBuilder } from "./script-generation/ScriptBuilder";
 import { PRE_SCRIPTS } from "../constants/paths";
 import fs from "fs";
+import { writeFile } from "./script-generation/actions/scriptActions";
 
 export default function generateExpressScript(): string {
   const dependencies: string[] = [];
@@ -19,9 +19,9 @@ export default function generateExpressScript(): string {
 
   const scriptBuilder = new ScriptBuilder();
 
-  scripts.forEach((value, key) => scriptBuilder.addScript(key, value));
-  scriptBuilder.addDependency(...dependencies);
-  scriptBuilder.addDevDependency(...devDependencies);
+  scripts.forEach((value, key) => scriptBuilder.addScript({ key, value }));
+  scriptBuilder.addDependencies(...dependencies);
+  scriptBuilder.addDevDependencies(...devDependencies);
 
   scriptBuilder.addExtension(extensions.node({ priority: 0 }));
   scriptBuilder.addExtension(extensions.express({ ts: true }));
@@ -33,7 +33,7 @@ export default function generateExpressScript(): string {
   scriptBuilder.addExtension(extensions.srcDir());
 
   scriptBuilder.addLine(
-    transcriber.writeFile(
+    writeFile(
       "./src/index.ts",
       fs.readFileSync(PRE_SCRIPTS + "/files/express/index.ts.txt", "utf8") //TODO: Fix this on vercel, does not load route from .ts file
     )
