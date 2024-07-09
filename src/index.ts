@@ -23,9 +23,11 @@ app.get("/", (req: Request, res: Response) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  token
-    ? servePage({ page: "/home-auth.html", res })
-    : servePage({ page: "/home-no-auth.html", res });
+  if (token) {
+    servePage({ page: "/home-auth.html", res });
+  } else {
+    servePage({ page: "/home-no-auth.html", res });
+  }
 });
 
 app.use("/auth", authController);
