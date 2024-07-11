@@ -17,9 +17,9 @@
     ],
     "include": [
         "src/**/*",
-        // "pre-scripts/actionImports.js"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "pre-scripts/actionImports.js"
     ]
 }

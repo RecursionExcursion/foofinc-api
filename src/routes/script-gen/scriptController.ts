@@ -1,7 +1,7 @@
 import express from "express";
 import scriptService from "./scriptService";
-import info from "./constants/info";
 import { ScriptRequest } from "./types/scriptRequest";
+import supportedServices from "./constants/services";
 
 const router = express.Router();
 
@@ -9,8 +9,8 @@ router.get("/", (req, res) => {
   res.json("Hello World!");
 });
 
-router.get("/info", (req, res) => {
-  res.json(info);
+router.get("/services", (req, res) => {
+  res.json(supportedServices);
 });
 
 router.post("/", (req, res) => {

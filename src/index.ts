@@ -1,11 +1,8 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-import scriptController from "./routes/script-gen/scriptController";
-import authController from "./routes/auth/authController";
 import dotenv from "dotenv";
-
-import { tokenAuthHandler } from "./lib/auth";
 import cors from "./lib/cors";
 import { servePage } from "./lib/pageServer";
+import routes from "./routes/routes";
 
 dotenv.config();
 
@@ -30,8 +27,7 @@ app.get("/", (req: Request, res: Response) => {
   }
 });
 
-app.use("/auth", authController);
-app.use("/script", tokenAuthHandler, scriptController);
+app.use(routes);
 
 app.listen(PORT);
 
