@@ -3,8 +3,8 @@ import Script from "./Script";
 import {
   actionImports,
   addPackageJsonScripts,
-  installDependencies,
-  installDevDependencies,
+  installDependenciesScript,
+  installDevDependenciesScript,
 } from "./scriptGenHelpers";
 
 const dependencyPriority = 2;
@@ -51,8 +51,8 @@ export class ScriptBuilder {
   build() {
     this.mapExtensionsToFields(this.extensions);
     return this.writeToScript(this._script, this.extensions);
-  }
 
+  }
   private mapExtensionsToFields = (extensions: Extension[]) => {
     extensions.forEach((extension) => {
       if (extension.dependencies)
@@ -72,8 +72,6 @@ export class ScriptBuilder {
       Object.getOwnPropertyDescriptors(script)
     );
 
-    console.log({ extensions });
-
     extensions.sort((a, b) => {
       const priorityA =
         a.priority !== undefined ? a.priority : Number.MAX_SAFE_INTEGER;
@@ -82,26 +80,20 @@ export class ScriptBuilder {
       return priorityA - priorityB;
     });
 
-    console.log({ extensions });
-
-    const isBeforeDependencies = (priority: number | undefined) => {
-      if (!priority) return false;
-      priority <= dependencyPriority;
+    const isBeforeDependencies = (extension: Extension) => {
+      if (extension.priority === undefined) return false;
+      return extension.priority <= dependencyPriority;
     };
 
-    extensions
-      .filter((extension) => isBeforeDependencies(extension.priority))
-      .forEach((extension) => {
-        console.log("writing", extension.script);
+    extensions.filter(isBeforeDependencies).forEach((extension) => {
+      if (extension.script) scriptCopy.addLine(extension.script);
+    });
 
-        if (extension.script) scriptCopy.addLine(extension.script);
-      });
-
-    scriptCopy.addLine(installDependencies(this.dependencies));
-    scriptCopy.addLine(installDevDependencies(this.devDependencies));
+    scriptCopy.addLine(installDependenciesScript(this.dependencies));
+    scriptCopy.addLine(installDevDependenciesScript(this.devDependencies));
 
     extensions
-      .filter((extension) => !isBeforeDependencies(extension.priority))
+      .filter((extension) => !isBeforeDependencies(extension))
       .forEach((extension) => {
         if (extension.script) scriptCopy.addLine(extension.script);
       });

@@ -1,8 +1,8 @@
-import extensions from "./extensions/extensions";
-import { ScriptBuilder } from "./script-generation/ScriptBuilder";
-import { PRE_SCRIPTS } from "../constants/paths";
+import extensions from "../add-ons/addOns";
+import { ScriptBuilder } from "../script-generation/ScriptBuilder";
+import { PRE_SCRIPTS } from "../../constants/paths";
 import fs from "fs";
-import { writeFile } from "./script-generation/actions/scriptActions";
+import { writeFile } from "../script-generation/actions/scriptActions";
 
 export default function generateExpressScript(): string {
   const dependencies: string[] = [];

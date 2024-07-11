@@ -1,5 +1,5 @@
 import { ScriptRequest } from "../../types/scriptRequest";
-import generateExpressScript from "../express";
+import generateExpressScript from "../templates/express";
 import { generateGenericScript } from "./genericScriptGenerator";
 
 export default function generateScript(scriptRequest: ScriptRequest): string {

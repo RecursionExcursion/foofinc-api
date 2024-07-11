@@ -29,8 +29,18 @@ export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
   return script;
 };
 
-export const installDependencies = (dependencies: string[]) =>
-  execute(`npm i -S ${dependencies.join(" ")}`);
+export const installDependenciesScript = (dependencies: string[]) => {
+  execute(installDependenciesString(dependencies));
+};
 
-export const installDevDependencies = (devDependencies: string[]) =>
-  execute(`npm i -D ${devDependencies.join(" ")}`);
+export const installDependenciesString = (dependencies: string[]) => {
+  return `npm i -S ${dependencies.join(" ")}`;
+};
+
+export const installDevDependenciesScript = (devDependencies: string[]) => {
+  execute(installDevDependenciesString(devDependencies));
+};
+
+export const installDevDependenciesString = (devDependencies: string[]) => {
+  return `npm i -D ${devDependencies.join(" ")}`;
+};

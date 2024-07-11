@@ -1,18 +1,21 @@
 import { ScriptRequest } from "../../types/scriptRequest";
-import extensions from "../extensions/extensions";
+import extensions from "../add-ons/addOns";
 import { ScriptBuilder } from "./ScriptBuilder";
 
 export const generateGenericScript = (scriptRequest: ScriptRequest): string => {
   const scriptBuilder = new ScriptBuilder();
 
-  scriptBuilder.addExtension(extensions.gitIgnore({ priority: 10 }));
-  scriptBuilder.addExtension(extensions.node({ priority: 0 }));
-
-  if (scriptRequest.prodDependencies) {
+  if (
+    scriptRequest.prodDependencies &&
+    scriptRequest.prodDependencies.length > 0
+  ) {
     scriptBuilder.addDependencies(...scriptRequest.prodDependencies);
   }
 
-  if (scriptRequest.devDependencies) {
+  if (
+    scriptRequest.devDependencies &&
+    scriptRequest.devDependencies.length > 0
+  ) {
     scriptBuilder.addDevDependencies(...scriptRequest.devDependencies);
   }
 

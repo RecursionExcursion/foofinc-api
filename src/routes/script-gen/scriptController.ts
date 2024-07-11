@@ -6,26 +6,41 @@ import { ScriptRequest } from "./types/scriptRequest";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.status(200).send(JSON.stringify("Hello World!"));
+  res.json("Hello World!");
 });
 
 router.get("/info", (req, res) => {
-  res.status(200).send(info);
+  res.json(info);
 });
 
 router.post("/", (req, res) => {
   const scriptRequest = req.body as ScriptRequest;
 
   const { success, fileData, additionalData } =
-    scriptService.generateScript(scriptRequest);
+    scriptService.createScript(scriptRequest);
 
   if (!success) {
-    return res
-      .status(400)
-      .send(`Expected body format - ${JSON.stringify(additionalData)}`);
+    return res.status(400).json({
+      message: `Expected body format - ${JSON.stringify(additionalData)}`,
+    });
   }
 
-  return res.send(JSON.stringify(fileData));
+  return res.json(fileData);
+});
+
+router.post("/cli", (req, res) => {
+  const scriptRequest = req.body as ScriptRequest;
+
+  const { success, cliCommands, additionalData } =
+    scriptService.createCliCommands(scriptRequest);
+
+  if (!success) {
+    return res.status(400).json({
+      message: `Expected body format - ${JSON.stringify(additionalData)}`,
+    });
+  }
+
+  return res.json(cliCommands);
 });
 
 export default router;
