@@ -1,7 +1,7 @@
 import express from "express";
-import scriptService from "./scriptService";
-import { ScriptRequest } from "./types/scriptRequest";
-import supportedServices from "./constants/services";
+import scriptService from "../service/scriptService";
+import { ScriptRequest } from "../types/scriptRequest";
+import supportedServices from "../constants/serviceProvider";
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
 
   if (!success) {
     return res.status(400).json({
-      message: `Expected body format - ${JSON.stringify(additionalData)}`,
+      message: additionalData,
     });
   }
 

@@ -51,8 +51,8 @@ export class ScriptBuilder {
   build() {
     this.mapExtensionsToFields(this.extensions);
     return this.writeToScript(this._script, this.extensions);
-
   }
+
   private mapExtensionsToFields = (extensions: Extension[]) => {
     extensions.forEach((extension) => {
       if (extension.dependencies)

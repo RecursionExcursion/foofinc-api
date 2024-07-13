@@ -1,7 +1,7 @@
 import express from "express";
 
-import scriptController from "./script-gen/scriptController";
-import authController from "./auth/authController";
+import scriptController from "./script/controller/scriptController";
+import authController from "./auth/controller/authController";
 import { tokenAuthHandler } from "../lib/auth";
 
 const router = express.Router();

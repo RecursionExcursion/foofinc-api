@@ -1,7 +1,7 @@
 import fs from "fs";
 import Script from "./Script";
-import { PRE_SCRIPTS } from "../../constants/paths";
 import { execute } from "./actions/scriptActions";
+import { PRE_SCRIPTS } from "../../constants/paths";
 
 export const actionImports = () => {
   return fs.readFileSync(PRE_SCRIPTS + "/actionImports.cjs", "utf8");
@@ -30,7 +30,7 @@ export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
 };
 
 export const installDependenciesScript = (dependencies: string[]) => {
-  execute(installDependenciesString(dependencies));
+  return execute(installDependenciesString(dependencies));
 };
 
 export const installDependenciesString = (dependencies: string[]) => {
@@ -38,7 +38,7 @@ export const installDependenciesString = (dependencies: string[]) => {
 };
 
 export const installDevDependenciesScript = (devDependencies: string[]) => {
-  execute(installDevDependenciesString(devDependencies));
+  return execute(installDevDependenciesString(devDependencies));
 };
 
 export const installDevDependenciesString = (devDependencies: string[]) => {

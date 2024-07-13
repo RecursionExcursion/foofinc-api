@@ -4,7 +4,7 @@ export type ScriptFramework = "node" | "react" | "next";
 
 export type ScriptRequest = {
   prebuildType?: PrebuildScriptType;
-  framework?: ScriptFramework;
+  build?: string;
   scripts?: Map<string, string>;
   prodDependencies?: string[];
   devDependencies?: string[];

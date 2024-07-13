@@ -1,7 +1,8 @@
-import generateScript from "./lib/script-generation/scriptGenerator";
 import { v4 as uuidv4 } from "uuid";
-import { ScriptRequest, ScriptRequestDescription } from "./types/scriptRequest";
-import generateCliCommands from "./lib/cli-command-generation/commandGenerator";
+import { ScriptRequest, ScriptRequestDescription } from "../types/scriptRequest";
+import generateScript from "../lib/script-generation/scriptGenerator";
+import generateCliCommands from "../lib/cli-command-generation/commandGenerator";
+
 
 type ScriptServicePayload = {
   success: boolean;
@@ -11,21 +12,31 @@ type ScriptServicePayload = {
 };
 
 //Use ts here to ensure the keys are the same as ScriptRequest
+//TODO make dyanimc so it pulls from builds.ts
 const expectedStructure: ScriptRequestDescription = {
-  prebuildType: `Optional<"express">`,
-  framework: `Optional<"node" | "react" | "next">`,
-  prodDependencies: "Optional<Array<string>>",
-  devDependencies: "Optional<Array<string>>",
-  scripts: "Optional<Map<string, string>>",
-  envVars: "Optional<Map<string, string>>",
+  prebuildType: `express>`,
+  build: `<runtime>-<framework>`,
+  prodDependencies: "Array<string>",
+  devDependencies: "Array<string>",
+  scripts: "Map<string, string>",
+  envVars: "Map<string, string>",
 };
 
 const createScript = (scriptRequest: ScriptRequest): ScriptServicePayload => {
   if (!checkIfRequestIsValid(scriptRequest)) {
-    return { success: false, additionalData: expectedStructure };
+    return {
+      success: false,
+      additionalData: `Expected format- ${JSON.stringify(expectedStructure)}`,
+    };
   }
 
-  const script = generateScript(scriptRequest);
+  const resp = generateScript(scriptRequest);
+
+  if (!resp.sucess) {
+    return { success: false, additionalData: resp.text };
+  }
+
+  const script = resp.text;
 
   const prefix = `easy-node-${uuidv4().split("-")[0]}`;
   const filetype = ".cjs";

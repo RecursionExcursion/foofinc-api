@@ -1,11 +1,11 @@
-import { PRE_SCRIPTS } from "../../constants/paths";
-import { Extension } from "../../types/extension";
 import fs from "fs";
 import {
   createDir,
   execute,
   writeFile,
 } from "../script-generation/actions/scriptActions";
+import { Extension } from "../../types/extension";
+import { PRE_SCRIPTS } from "../../constants/paths";
 
 type ExtensionParams = {
   priority?: number;

@@ -15,9 +15,9 @@ const generateCliCommands = (scriptRequest: ScriptRequest): string[] => {
     commands.push(installDevDependenciesString(scriptRequest.devDependencies));
   }
 
-  if (scriptRequest.framework) {
-    //TODO: Add framework specific commands
-  }
+  // if (scriptRequest.framework) {
+  //   //TODO: Add framework specific commands
+  // }
 
   return commands;
 };
