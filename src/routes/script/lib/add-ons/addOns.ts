@@ -3,7 +3,7 @@ import {
   createDir,
   execute,
   writeFile,
-} from "../script-generation/actions/scriptActions";
+} from "../script-gen/scriptActions";
 import { Extension } from "../../types/extension";
 import { PRE_SCRIPTS } from "../../constants/paths";
 

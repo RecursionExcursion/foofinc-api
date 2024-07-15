@@ -2,7 +2,7 @@ import { ScriptRequest } from "../../types/scriptRequest";
 import {
   installDependenciesString,
   installDevDependenciesString,
-} from "../script-generation/scriptGenHelpers";
+} from "../script-gen/scriptGenHelpers";
 
 const generateCliCommands = (scriptRequest: ScriptRequest): string[] => {
   const commands = [];

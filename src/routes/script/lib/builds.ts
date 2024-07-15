@@ -27,7 +27,6 @@ const nextJs: Build = {
 
 const electron: Build = {
   framework: "electron",
-  cliCommand: "npx create-electron-app",
   prodDependencies: [],
   devDependencies: ["electron"],
   runtime: "node",

@@ -2,16 +2,21 @@
 import { ScriptRequest } from "../../types/scriptRequest";
 import { generateGenericScript } from "./genericScriptGenerator";
 import uglify from "uglify-js";
+import { v4 as uuidv4 } from "uuid";
 
 export type ScriptGenResponse = {
-  sucess: boolean;
+  success: boolean;
   text: string;
+  fileName?: string;
 };
 
 type ScriptGenMap = Map<
   string,
   (scriptRequest: ScriptRequest) => ScriptGenResponse
 >;
+
+const prefix = `easy-node-`;
+const filetype = ".cjs";
 
 const scriptGeneratorMap: ScriptGenMap = new Map([
   // ["express", generateExpressScript],
@@ -23,16 +28,22 @@ export default function generateScript(
 ): ScriptGenResponse {
   const { prebuildType } = scriptRequest;
 
-  const func =
+  const scriptGenerator =
     scriptGeneratorMap.get(prebuildType ?? "") ?? generateGenericScript;
 
-  const resp = func(scriptRequest);
+  const resp = scriptGenerator(scriptRequest);
 
-  if (resp.sucess) {
-    const script = resp.text;
-    const minifiedScript = uglify.minify(script).code;
-    resp.text = minifiedScript;
+  if (resp.success) {
+    resp.text = minifyScript(resp.text);
+    resp.fileName = generateFileName();
   }
 
   return resp;
 }
+
+const minifyScript = (script: string): string => uglify.minify(script).code;
+
+const generateFileName = (): string => {
+  const id = uuidv4().split("-")[0];
+  return prefix + id + filetype;
+};

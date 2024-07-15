@@ -1,7 +1,7 @@
 import extensions from "../add-ons/addOns";
-import { ScriptBuilder } from "../script-generation/ScriptBuilder";
+import { ScriptBuilder } from "../script-gen/ScriptBuilder";
 import fs from "fs";
-import { writeFile } from "../script-generation/actions/scriptActions";
+import { writeFile } from "../script-gen/scriptActions";
 import { PRE_SCRIPTS } from "../../constants/paths";
 
 export default function generateExpressScript(): string {
@@ -32,12 +32,12 @@ export default function generateExpressScript(): string {
   scriptBuilder.addExtension(extensions.gitIgnore());
   scriptBuilder.addExtension(extensions.srcDir());
 
-  scriptBuilder.addLine(
-    writeFile(
-      "./src/index.ts",
-      fs.readFileSync(PRE_SCRIPTS + "/files/express/index.ts.txt", "utf8") //TODO: Fix this on vercel, does not load route from .ts file
-    )
-  );
+  // scriptBuilder.addLine(
+  //   writeFile(
+  //     "./src/index.ts",
+  //     fs.readFileSync(PRE_SCRIPTS + "/files/express/index.ts.txt", "utf8") //TODO: Fix this on vercel, does not load route from .ts file
+  //   )
+  // );
 
   return scriptBuilder.build().script;
 }

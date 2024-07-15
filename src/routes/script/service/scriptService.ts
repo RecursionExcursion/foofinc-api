@@ -1,8 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
-import { ScriptRequest, ScriptRequestDescription } from "../types/scriptRequest";
-import generateScript from "../lib/script-generation/scriptGenerator";
-import generateCliCommands from "../lib/cli-command-generation/commandGenerator";
-
+import {
+  ScriptRequest,
+  ScriptRequestDescription,
+} from "../types/scriptRequest";
+import generateScript from "../lib/script-generators/scriptGenerator";
+import generateCliCommands from "../lib/command-generators/commandGenerator";
 
 type ScriptServicePayload = {
   success: boolean;
@@ -32,16 +33,12 @@ const createScript = (scriptRequest: ScriptRequest): ScriptServicePayload => {
 
   const resp = generateScript(scriptRequest);
 
-  if (!resp.sucess) {
+  if (!resp.success) {
     return { success: false, additionalData: resp.text };
   }
 
   const script = resp.text;
-
-  const prefix = `easy-node-${uuidv4().split("-")[0]}`;
-  const filetype = ".cjs";
-
-  const fileName = prefix + filetype;
+  const fileName = resp.fileName ?? "script.cjs";
 
   return { success: true, fileData: { script, fileName } };
 };

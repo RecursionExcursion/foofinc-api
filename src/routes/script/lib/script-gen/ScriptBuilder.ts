@@ -9,6 +9,8 @@ import {
 
 const dependencyPriority = 2;
 
+type Line = { text: string; priority?: number };
+
 export class ScriptBuilder {
   private _script: Script;
   private extensions: Extension[] = [];
@@ -17,7 +19,7 @@ export class ScriptBuilder {
   private devDependencies: string[] = [];
 
   private scripts: Map<string, string> = new Map();
-  private lines: string[] = [];
+  private lines: Line[] = [];
 
   constructor() {
     this._script = new Script();
@@ -44,7 +46,7 @@ export class ScriptBuilder {
     this.devDependencies.push(...devDependencies);
   };
 
-  addLine = (line: string) => {
+  addLine = (line: Line) => {
     this.lines.push(line);
   };
 
@@ -61,8 +63,11 @@ export class ScriptBuilder {
       if (extension.devDependencies)
         this.devDependencies.push(...extension.devDependencies);
 
-      if (extension.additionalExecutions)
-        this.lines.push(...extension.additionalExecutions);
+      if (extension.additionalExecutions) {
+        extension.additionalExecutions.forEach((line) =>
+          this.lines.push({ text: line })
+        );
+      }
     });
   };
 

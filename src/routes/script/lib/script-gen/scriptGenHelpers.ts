@@ -1,6 +1,6 @@
 import fs from "fs";
 import Script from "./Script";
-import { execute } from "./actions/scriptActions";
+import { execute } from "./scriptActions";
 import { PRE_SCRIPTS } from "../../constants/paths";
 
 export const actionImports = () => {
