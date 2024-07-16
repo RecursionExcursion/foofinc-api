@@ -15,8 +15,12 @@ export const pkgService = async () => {
   console.log(tempFilePath, tempDestPath);
 
   const cleanUp = () => {
-    fs.unlinkSync(tempFilePath);
-    fs.unlinkSync(tempDestPath);
+    if (fs.existsSync(tempFilePath)) {
+      fs.unlinkSync(tempFilePath);
+    }
+    if (fs.existsSync(tempDestPath)) {
+      fs.unlinkSync(tempDestPath);
+    }
   };
 
   try {
