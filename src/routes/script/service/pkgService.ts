@@ -3,38 +3,47 @@ import { generateFileName } from "../lib/script-generators/scriptGenerator";
 import { exec } from "pkg";
 import path from "path";
 import { tmpdir } from "os";
+import log from "../../../lib/logger";
 
 const temp = tmpdir();
 
 export const pkgService = async () => {
   const fn = generateFileName("temp", ".cjs");
 
-  const cwd = process.cwd();
-  console.log(cwd);
-
-  // const tempFile = cwd + temp + fn;
-  // const tempDest = cwd + temp + "/test.exe";
-
-  console.log(temp);
-
   const tempFilePath = path.join(temp, fn);
   const tempDestPath = path.join(temp, "test.exe");
-  // const tempFilePath = path.join(cwd, temp, fn);
-  // const tempDestPath = path.join(cwd, temp, "test.exe");
-
   console.log(tempFilePath, tempDestPath);
 
-  fs.writeFileSync(tempFilePath, testApp, "utf8");
-
-  await exec([tempFilePath, "--target", "node14-win-x64", "--output", tempDestPath]);
-
-  const stream = fs.createReadStream(tempDestPath);
-  stream.on("end", () => {
+  const cleanUp = () => {
     fs.unlinkSync(tempFilePath);
     fs.unlinkSync(tempDestPath);
-  });
+  };
 
-  return stream;
+  try {
+    fs.writeFileSync(tempFilePath, testApp, "utf8");
+
+    await exec([
+      tempFilePath,
+      "--target",
+      "node12-win-x64",
+      "--output",
+      tempDestPath,
+    ]);
+
+    const stream = fs.createReadStream(tempDestPath);
+    stream.on("end", () => {
+      cleanUp();
+    });
+    stream.on("error", (err) => {
+      log("Error in stream... Cleaning up", "warn");
+      cleanUp();
+      log(err.message, "error");
+    });
+
+    return stream;
+  } catch (err) {
+    cleanUp();
+  }
 };
 
 const testApp = `const { Readable, Transform, Writable, Stream } = require("stream");

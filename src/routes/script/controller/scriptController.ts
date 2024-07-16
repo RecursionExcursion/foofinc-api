@@ -46,10 +46,11 @@ router.post("/cli", (req, res) => {
 
 router.get("/pkg", async (req, res) => {
   const stream = await pkgService();
-  // res.setHeader('Content-Disposition', 'attachment; filename="package.exe"');
-  // res.setHeader('Content-Type', 'application/octet-stream');
+  if (!stream) {
+    return res.status(500).json({ message: "Error creating exe" });
+  }
+
   stream.pipe(res);
-  // return res.send(stream);
 });
 
 export default router;
