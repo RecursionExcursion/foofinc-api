@@ -1,8 +1,10 @@
 import fs from "fs";
 import { generateFileName } from "../lib/script-generators/scriptGenerator";
 import { exec } from "pkg";
+import path from "path";
+import { tmpdir } from "os";
 
-const temp = "/tmp/";
+const temp = tmpdir();
 
 export const pkgService = async () => {
   const fn = generateFileName("temp", ".cjs");
@@ -10,17 +12,24 @@ export const pkgService = async () => {
   const cwd = process.cwd();
   console.log(cwd);
 
-  const tempFile = cwd + temp + fn;
-  const tempDest = cwd + temp + "/test.exe";
+  // const tempFile = cwd + temp + fn;
+  // const tempDest = cwd + temp + "/test.exe";
 
-  fs.writeFileSync(tempFile, testApp, "utf8");
+  console.log(tmpdir());
 
-  await exec([tempFile, "--target", "node14", "--output", tempDest]);
+  const tempFilePath = path.join(temp, fn);
+  const tempDestPath = path.join(temp, "test.exe");
+  // const tempFilePath = path.join(cwd, temp, fn);
+  // const tempDestPath = path.join(cwd, temp, "test.exe");
 
-  const stream = fs.createReadStream(tempDest);
+  fs.writeFileSync(tempFilePath, testApp, "utf8");
+
+  await exec([tempFilePath, "--target", "node14", "--output", tempDestPath]);
+
+  const stream = fs.createReadStream(tempDestPath);
   stream.on("end", () => {
-    fs.unlinkSync(tempFile);
-    fs.unlinkSync(tempDest);
+    fs.unlinkSync(tempFilePath);
+    fs.unlinkSync(tempDestPath);
   });
 
   return stream;
