@@ -29,7 +29,7 @@ export const pkgService = async () => {
     }
   };
 
-  const command = `cross-env PKG_CACHE_PATH=${binariesPath} && pkg ${tempFilePath} -t node18-win-x64 -o ${tempDestPath} -d`;
+  const command = `export PKG_CACHE_PATH=${binariesPath} && pkg ${tempFilePath} -t node18-win-x64 -o ${tempDestPath} -d`;
 
   try {
     fs.writeFileSync(tempFilePath, testApp, "utf8");
