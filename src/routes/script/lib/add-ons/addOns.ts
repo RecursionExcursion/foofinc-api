@@ -1,11 +1,7 @@
 import fs from "fs";
-import {
-  createDir,
-  execute,
-  writeFile,
-} from "../script-gen/scriptActions";
-import { Extension } from "../../types/extension";
+import { createDir, execute, writeFile } from "../script-gen/scriptActions";
 import { PRE_SCRIPTS } from "../../constants/paths";
+import { Extension } from "../script-builder/ScriptBuilder";
 
 type ExtensionParams = {
   priority?: number;

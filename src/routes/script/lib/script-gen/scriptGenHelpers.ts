@@ -1,15 +1,19 @@
 import fs from "fs";
-import Script from "./Script";
+import Script from "../script-builder/Script";
 import { execute } from "./scriptActions";
 import { PRE_SCRIPTS } from "../../constants/paths";
 
-export const actionImports = () => {
-  return fs.readFileSync(PRE_SCRIPTS + "/actionImports.cjs", "utf8");
-};
+// /pre-scripts/actionImports.cjs
+// export const actionImports = () => {
 
-export const executors = () => {
-  return fs.readFileSync(PRE_SCRIPTS + "/executors.cjs", "utf8");
-};
+// };
+// export const actionImports = () => {
+//   return fs.readFileSync(PRE_SCRIPTS + "/actionImports.cjs", "utf8");
+// };
+
+// export const executors = () => {
+//   return fs.readFileSync(PRE_SCRIPTS + "/executors.cjs", "utf8");
+// };
 
 export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
   const script = new Script();
@@ -20,11 +24,11 @@ export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
               .join(",\n")}
           ]);`;
 
-  script.addLine(scriptsString);
+  script.writeLine(scriptsString);
   //Script to add scripts to package.json
-  script.addLine(fs.readFileSync(PRE_SCRIPTS + "/addScripts.cjs", "utf8"));
+  script.writeLine(fs.readFileSync(PRE_SCRIPTS + "/addScripts.cjs", "utf8"));
   //Calling the script-generation logic in the script
-  script.addLine("addScripts(scripts);");
+  script.writeLine("addScripts(scripts);");
 
   return script;
 };

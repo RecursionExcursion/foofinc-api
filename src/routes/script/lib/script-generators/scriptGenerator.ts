@@ -1,6 +1,6 @@
 // import generateExpressScript from "../templates/express";
 import { ScriptRequest } from "../../types/scriptRequest";
-import { generateGenericScript } from "./genericScriptGenerator";
+import { generateGenericScript } from "./generic/genericScriptGen";
 import uglify from "uglify-js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,9 +33,11 @@ export default function generateScript(
 
   const resp = scriptGenerator(scriptRequest);
 
+  console.log(resp);
+
   if (resp.success) {
     resp.text = minifyScript(resp.text);
-    resp.fileName = generateFileName();
+    resp.fileName = generateFileName(prefix, filetype);
   }
 
   return resp;
@@ -43,7 +45,7 @@ export default function generateScript(
 
 const minifyScript = (script: string): string => uglify.minify(script).code;
 
-const generateFileName = (): string => {
+export const generateFileName = (prefix: string, filetype: string): string => {
   const id = uuidv4().split("-")[0];
-  return prefix + id + filetype;
+  return [prefix, id].join("-") + filetype;
 };

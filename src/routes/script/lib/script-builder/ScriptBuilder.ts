@@ -1,15 +1,20 @@
-import { Extension } from "../../types/extension";
 import Script from "./Script";
-import {
-  actionImports,
-  addPackageJsonScripts,
-  installDependenciesScript,
-  installDevDependenciesScript,
-} from "./scriptGenHelpers";
+import { scriptActionImport } from "../script-gen/scriptActions";
+import buildScriptPipe, { BuilderPipeParams } from "./buildScriptPipe";
 
 const dependencyPriority = 2;
 
-type Line = { text: string; priority?: number };
+type Priority = number;
+
+export type Line = { text: string; priority?: Priority };
+
+export type Extension = {
+  script?: string;
+  devDependencies?: string[];
+  dependencies?: string[];
+  additionalExecutions?: string[];
+  priority?: Priority;
+};
 
 export class ScriptBuilder {
   private _script: Script;
@@ -23,8 +28,12 @@ export class ScriptBuilder {
 
   constructor() {
     this._script = new Script();
-    this._script.addLine(actionImports());
+    this._script.writeLine(scriptActionImport);
   }
+
+  getProdDependencies = () => this.dependencies;
+  getDevDependencies = () => this.devDependencies;
+  getScripts = () => this.scripts;
 
   addExtension = (extension: Extension) => this.extensions.push(extension);
 
@@ -52,7 +61,7 @@ export class ScriptBuilder {
 
   build() {
     this.mapExtensionsToFields(this.extensions);
-    return this.writeToScript(this._script, this.extensions);
+    return this.writeToScript(this._script, this.extensions, this.lines);
   }
 
   private mapExtensionsToFields = (extensions: Extension[]) => {
@@ -71,43 +80,25 @@ export class ScriptBuilder {
     });
   };
 
-  private writeToScript = (script: Script, extensions: Extension[]) => {
-    const scriptCopy = Object.create(
+  private writeToScript = (
+    script: Script,
+    extensions: Extension[],
+    lines: Line[]
+  ) => {
+    const scriptCopy: Script = Object.create(
       Object.getPrototypeOf(script),
       Object.getOwnPropertyDescriptors(script)
     );
 
-    extensions.sort((a, b) => {
-      const priorityA =
-        a.priority !== undefined ? a.priority : Number.MAX_SAFE_INTEGER;
-      const priorityB =
-        b.priority !== undefined ? b.priority : Number.MAX_SAFE_INTEGER;
-      return priorityA - priorityB;
-    });
-
-    const isBeforeDependencies = (extension: Extension) => {
-      if (extension.priority === undefined) return false;
-      return extension.priority <= dependencyPriority;
+    const pipeParams: BuilderPipeParams = {
+      script: scriptCopy,
+      builder: this,
+      priorityArray: [...extensions, ...lines],
+      dependencyPriority,
     };
 
-    extensions.filter(isBeforeDependencies).forEach((extension) => {
-      if (extension.script) scriptCopy.addLine(extension.script);
-    });
+    const res = buildScriptPipe(pipeParams);
 
-    scriptCopy.addLine(installDependenciesScript(this.dependencies));
-    scriptCopy.addLine(installDevDependenciesScript(this.devDependencies));
-
-    extensions
-      .filter((extension) => !isBeforeDependencies(extension))
-      .forEach((extension) => {
-        if (extension.script) scriptCopy.addLine(extension.script);
-      });
-
-    if (this.scripts.size > 0)
-      scriptCopy.mergeScript(addPackageJsonScripts(this.scripts));
-
-    this.lines.forEach((line) => scriptCopy.addLine(line));
-
-    return scriptCopy;
+    return res.script;
   };
 }

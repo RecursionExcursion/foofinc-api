@@ -1,3 +1,8 @@
+export const scriptActionImport = `
+  const execSync = require("child_process").execSync;
+  const fs = require("fs");
+  `;
+
 export const execute = (command: string) => {
   return `execSync(\`${command}\`, { stdio: "inherit" })`;
 };

@@ -2,6 +2,7 @@ import express from "express";
 import scriptService from "../service/scriptService";
 import { ScriptRequest } from "../types/scriptRequest";
 import supportedServices from "../constants/serviceProvider";
+import { pkgService } from "../service/pkgService";
 
 const router = express.Router();
 
@@ -41,6 +42,14 @@ router.post("/cli", (req, res) => {
   }
 
   return res.json(cliCommands);
+});
+
+router.get("/pkg", async (req, res) => {
+  const stream = await pkgService();
+  // res.setHeader('Content-Disposition', 'attachment; filename="package.exe"');
+  // res.setHeader('Content-Type', 'application/octet-stream');
+  stream.pipe(res);
+  // return res.send(stream);
 });
 
 export default router;

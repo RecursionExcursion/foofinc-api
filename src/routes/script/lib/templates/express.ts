@@ -1,5 +1,5 @@
 import extensions from "../add-ons/addOns";
-import { ScriptBuilder } from "../script-gen/ScriptBuilder";
+import { ScriptBuilder } from "../script-builder/ScriptBuilder";
 import fs from "fs";
 import { writeFile } from "../script-gen/scriptActions";
 import { PRE_SCRIPTS } from "../../constants/paths";

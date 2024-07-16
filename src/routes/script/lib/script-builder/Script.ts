@@ -1,17 +1,15 @@
 export default class Script {
   private lines: string[] = [];
 
-  constructor() {}
-
-  addLine(line: string) {
+  writeLine(line: string) {
     this.lines.push(line);
   }
 
   mergeScript(otherScript: Script) {
-    otherScript.getLines().forEach((line) => this.addLine(line));
+    otherScript.readLines().forEach((line) => this.writeLine(line));
   }
 
-  getLines() {
+  readLines() {
     return this.lines;
   }
 
