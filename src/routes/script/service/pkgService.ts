@@ -28,10 +28,11 @@ export const pkgService = async () => {
 
     await exec([
       tempFilePath,
-      "--target",
-      "node12-win-x64",
-      "--output",
+      "-t",
+      "node18-win-x64",
+      "-o",
       tempDestPath,
+      "-d",
     ]);
 
     const stream = fs.createReadStream(tempDestPath);
