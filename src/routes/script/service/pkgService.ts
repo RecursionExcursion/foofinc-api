@@ -26,7 +26,7 @@ export const pkgService = async () => {
 
   fs.writeFileSync(tempFilePath, testApp, "utf8");
 
-  await exec([tempFilePath, "--target", "node14", "--output", tempDestPath]);
+  await exec([tempFilePath, "--target", "node14-win-x64", "--output", tempDestPath]);
 
   const stream = fs.createReadStream(tempDestPath);
   stream.on("end", () => {
