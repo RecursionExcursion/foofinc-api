@@ -1,18 +1,24 @@
 import fs from "fs";
 import { generateFileName } from "../lib/script-generators/scriptGenerator";
-import { exec } from "pkg";
+// import { exec as pkgExec } from "pkg";
 import path from "path";
 import { tmpdir } from "os";
 import log from "../../../lib/logger";
+import exec from "child_process";
 
 const temp = tmpdir();
 
 export const pkgService = async () => {
+  const workingDir = process.cwd();
+
+  const binariesPath = path.join(workingDir, "pkg-binaries");
+
   const fn = generateFileName("temp", ".cjs");
 
   const tempFilePath = path.join(temp, fn);
   const tempDestPath = path.join(temp, "test.exe");
-  console.log(tempFilePath, tempDestPath);
+
+  console.log({ tempFilePath, tempDestPath });
 
   const cleanUp = () => {
     if (fs.existsSync(tempFilePath)) {
@@ -23,17 +29,21 @@ export const pkgService = async () => {
     }
   };
 
+  const command = `cross-env PKG_CACHE_PATH=${binariesPath} && pkg ${tempFilePath} -t node18-win-x64 -o ${tempDestPath} -d`;
+
   try {
     fs.writeFileSync(tempFilePath, testApp, "utf8");
 
-    await exec([
-      tempFilePath,
-      "-t",
-      "node18-win-x64",
-      "-o",
-      tempDestPath,
-      "-d",
-    ]);
+    exec.execSync(command);
+
+    // await pkgExec([
+    //   tempFilePath,
+    //   "-t",
+    //   "node18-win-x64",
+    //   "-o",
+    //   tempDestPath,
+    //   "-d",
+    // ]);
 
     const stream = fs.createReadStream(tempDestPath);
     stream.on("end", () => {
