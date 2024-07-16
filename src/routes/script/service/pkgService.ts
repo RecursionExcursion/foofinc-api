@@ -15,12 +15,14 @@ export const pkgService = async () => {
   // const tempFile = cwd + temp + fn;
   // const tempDest = cwd + temp + "/test.exe";
 
-  console.log(tmpdir());
+  console.log(temp);
 
   const tempFilePath = path.join(temp, fn);
   const tempDestPath = path.join(temp, "test.exe");
   // const tempFilePath = path.join(cwd, temp, fn);
   // const tempDestPath = path.join(cwd, temp, "test.exe");
+
+  console.log(tempFilePath, tempDestPath);
 
   fs.writeFileSync(tempFilePath, testApp, "utf8");
 
