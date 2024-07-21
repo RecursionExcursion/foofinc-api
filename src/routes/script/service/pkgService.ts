@@ -1,14 +1,15 @@
 import logger from "../../../lib/logger";
 import createNodeSea from "../lib/node-sea/node-sea";
 import zlib from "zlib";
-// import path from "path";
+import path from "path";
 
 export const pkgService = async () => {
   try {
     const seaExeStream = createNodeSea({
       fileName: "test",
       fileContent: testApp,
-      // binDir: path.join(process.cwd(), "sea-bin"),
+      targetSig: "win",
+      binDir: path.join(process.cwd(), "sea-bin"),
     });
 
     if (!seaExeStream) return;

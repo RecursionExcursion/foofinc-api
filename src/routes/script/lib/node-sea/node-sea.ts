@@ -4,18 +4,25 @@ import fs from "fs";
 import { execSync } from "child_process";
 import logger from "../../../../lib/logger";
 
+const targets = {
+  win: "win-x64",
+  darwin: "darwin-x64",
+  linux: "linux-x64",
+};
+
 type NodeSeaParams = {
   fileName: string;
   fileContent: string;
   binDir?: string;
   tempDir?: string;
+  targetSig?: keyof typeof targets;
 };
 
 export default function createNodeSea(params: NodeSeaParams) {
-  const { binDir, ...rest } = params;
+  const { binDir, targetSig, ...rest } = params;
 
   const seaEx = sea({
-    binDir: getTargetBinDir(binDir),
+    binDir: getTargetBinDir(binDir, targets[targetSig ?? "win"]),
     ...rest,
   });
   return seaEx.execute();
@@ -27,6 +34,8 @@ const sea = (params: NodeSeaParams) => {
   const uniqueFileName = `${getRandNumber(10000, 99999)}-${fileName}`;
   const blobName = "sea-prep.blob";
   const configName = "sea-config.json";
+
+  const createdFiles: string[] = [];
 
   const pathParams = {
     fileName: uniqueFileName,
@@ -40,6 +49,7 @@ const sea = (params: NodeSeaParams) => {
 
   const transcribeProgram = () => {
     fs.writeFileSync(paths.jsFilePath, fileContent);
+    createdFiles.push(paths.jsFilePath);
   };
 
   const generateConfig = () => {
@@ -49,15 +59,18 @@ const sea = (params: NodeSeaParams) => {
     };
 
     fs.writeFileSync(paths.configPath, JSON.stringify(config, null, 2));
+    createdFiles.push(paths.configPath);
   };
 
   const generateSeaBlob = () => {
     execSync(`node --experimental-sea-config ${paths.configPath}`);
+    createdFiles.push(paths.blobPath);
   };
 
   const generateExeFromNodeBinary = () => {
     const binaryLoc = paths.binDir ?? process.execPath;
     fs.copyFileSync(binaryLoc, paths.exePath);
+    createdFiles.push(paths.exePath);
   };
 
   const injectBlob = () => {
@@ -77,7 +90,7 @@ const sea = (params: NodeSeaParams) => {
       const error = e as Error;
       logger(error.message, "error");
       console.error(e);
-      clearFolderAsync(paths.tmpDir);
+      clearFolderAsync(paths.tmpDir, createdFiles);
       return false;
     }
   };
@@ -85,10 +98,10 @@ const sea = (params: NodeSeaParams) => {
   const streamExe = () => {
     const stream = fs.createReadStream(paths.exePath);
     stream.on("end", () => {
-      clearFolderAsync(paths.tmpDir);
+      clearFolderAsync(paths.tmpDir, createdFiles);
     });
     stream.on("error", (err) => {
-      clearFolderAsync(paths.tmpDir);
+      clearFolderAsync(paths.tmpDir, createdFiles);
       throw new Error(err.message);
     });
 
@@ -105,7 +118,7 @@ const sea = (params: NodeSeaParams) => {
   };
 };
 
-const getTargetBinDir = (binDir: string | undefined) => {
+const getTargetBinDir = (binDir?: string, targetSig?: string) => {
   if (binDir === undefined) return undefined;
 
   const files = fs.readdirSync(binDir);
@@ -114,13 +127,23 @@ const getTargetBinDir = (binDir: string | undefined) => {
     throw new Error("No prebuilt binaries found in the specified directory");
   }
 
-  const { platform, arch } = getOsInfo();
+  let platform: string;
+  let arch: string;
+
+  if (targetSig) {
+    [platform, arch] = targetSig.split("-");
+  } else {
+    const { platform: p, arch: a } = getOsInfo();
+    platform = p;
+    arch = a;
+  }
 
   const targetBinary = files.find((file) => {
     return file.includes(platform) && file.includes(arch);
   });
 
   //TODO logs
+  logger(targetSig ?? "No targetSig provided, using current OS");
   logger(platform);
   logger(arch);
   logger(binDir);
@@ -194,7 +217,7 @@ const getRandNumber = (num1 = 0, num2 = 1) => {
 const normalizeFileName = (fileName: string) => fileName.split(".")[0];
 
 //TODO: Impl logic to clear folder of only files created by this script
-const clearFolderAsync = (dir: string) => {
+const clearFolderAsync = (dir: string, filesToDelete: string[]) => {
   const deleteIfExists = (path: string) => {
     fs.existsSync(path) && fs.unlinkSync(path);
   };
@@ -202,6 +225,11 @@ const clearFolderAsync = (dir: string) => {
     if (err) {
       throw new Error(err.message);
     }
-    files.forEach((file) => deleteIfExists(path.join(dir, file)));
+    files.forEach((file) => {
+      const filePath = path.join(dir, file);
+      if (filesToDelete.includes(filePath)) {
+        deleteIfExists(filePath);
+      }
+    });
   });
 };
