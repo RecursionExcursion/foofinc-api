@@ -83,6 +83,7 @@ const sea = (params: NodeSeaParams) => {
     );
     logger(`Injected blob into ${paths.exePath}`);
   };
+  
   const createExe = () => {
     try {
       transcribeProgram();
