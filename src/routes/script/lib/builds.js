@@ -3,18 +3,30 @@ export const runtimes = {
   browser: "browser",
 };
 
+/**
+ *@typedef {Object} Build
+ *@property {string} framework - Framework of the build
+ *@property {string} [cliCommand] - CLI command for the build
+ *@property {string[]} [prodDependencies] - Production dependencies for the build
+ *@property {string[]} [devDependencies] - Development dependencies for the build
+ *@property {string} [runtime] - Runtime of the build
+ */
+
+/** @type {Build} */
 const react = {
   framework: "react",
   cliCommand: "npx create-react-app",
   runtime: "browser",
 };
 
+/** @type {Build} */
 const nextJs = {
   framework: "next",
   cliCommand: "npx create-next-app",
   runtime: "browser",
 };
 
+/** @type {Build} */
 const electron = {
   framework: "electron",
   prodDependencies: [],
