@@ -1,20 +1,9 @@
-import {
-  ScriptRequest,
-  ScriptRequestDescription,
-} from "../types/scriptRequest";
-import generateScript from "../lib/script-generators/scriptGenerator";
-import generateCliCommands from "../lib/command-generators/commandGenerator";
-
-type ScriptServicePayload = {
-  success: boolean;
-  fileData?: { script: string; fileName: string };
-  cliCommands?: string[];
-  additionalData?: unknown;
-};
+import generateCliCommands from "../lib/command-generators/commandGenerator.js";
+import generateScript from "../lib/script-generators/scriptGenerator.js";
 
 //Use ts here to ensure the keys are the same as ScriptRequest
 //TODO make dyanimc so it pulls from builds.ts
-const expectedStructure: ScriptRequestDescription = {
+const expectedStructure = {
   prebuildType: `express>`,
   build: `<runtime>-<framework>`,
   prodDependencies: "Array<string>",
@@ -23,7 +12,7 @@ const expectedStructure: ScriptRequestDescription = {
   envVars: "Map<string, string>",
 };
 
-const createScript = (scriptRequest: ScriptRequest): ScriptServicePayload => {
+const createScript = (scriptRequest) => {
   if (!checkIfRequestIsValid(scriptRequest)) {
     return {
       success: false,
@@ -43,9 +32,7 @@ const createScript = (scriptRequest: ScriptRequest): ScriptServicePayload => {
   return { success: true, fileData: { script, fileName } };
 };
 
-const createCliCommands = (
-  scriptRequest: ScriptRequest
-): ScriptServicePayload => {
+const createCliCommands = (scriptRequest) => {
   if (!checkIfRequestIsValid(scriptRequest)) {
     return { success: false, additionalData: expectedStructure };
   }
@@ -55,7 +42,7 @@ const createCliCommands = (
   return { success: true, cliCommands: commands };
 };
 
-const checkIfRequestIsValid = (scriptRequest: ScriptRequest): boolean => {
+const checkIfRequestIsValid = (scriptRequest) => {
   return Object.values(scriptRequest).some((val) => val !== undefined);
 };
 

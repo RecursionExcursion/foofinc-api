@@ -1,11 +1,11 @@
-import logger from "../../../lib/logger";
-import createNodeSea from "../lib/node-sea/node-sea";
 import zlib from "zlib";
 import path from "path";
+import logger from "../../../lib/logger.js";
+import createNodeSea from "../lib/node-sea/node-sea.js";
 
 export const pkgService = async () => {
   try {
-    const seaExeStream = createNodeSea({
+    const seaExeStream = await createNodeSea({
       fileName: "test",
       fileContent: testApp,
       targetSig: "win",
@@ -16,8 +16,7 @@ export const pkgService = async () => {
 
     return seaExeStream.pipe(zlib.createGzip());
   } catch (e) {
-    const error = e as Error;
-    logger(error.message, "error");
+    logger(e.message, "error");
     return;
   }
 };

@@ -2,18 +2,9 @@ import {
   addPackageJsonScripts,
   installDependenciesScript,
   installDevDependenciesScript,
-} from "../script-gen/scriptGenHelpers";
-import Script from "./Script";
-import { Extension, Line, ScriptBuilder } from "./ScriptBuilder";
+} from "../script-gen/scriptGenHelpers.js";
 
-export type BuilderPipeParams = {
-  script: Script;
-  builder: ScriptBuilder;
-  priorityArray: (Extension | Line)[];
-  dependencyPriority: number;
-};
-
-const sortByPriority = (params: BuilderPipeParams) => {
+const sortByPriority = (params) => {
   const arrayCopy = structuredClone(params.priorityArray);
   arrayCopy.sort((a, b) => {
     const priorityA =
@@ -30,7 +21,7 @@ const sortByPriority = (params: BuilderPipeParams) => {
   };
 };
 
-const writeBeforeDepLines = (params: BuilderPipeParams) => {
+const writeBeforeDepLines = (params) => {
   const dependencyPriority = params.dependencyPriority;
 
   params.priorityArray
@@ -41,7 +32,7 @@ const writeBeforeDepLines = (params: BuilderPipeParams) => {
   return params;
 };
 
-const installDependencies = (params: BuilderPipeParams) => {
+const installDependencies = (params) => {
   const prodDependencies = params.builder.getProdDependencies();
   const devDependencies = params.builder.getDevDependencies();
 
@@ -55,7 +46,7 @@ const installDependencies = (params: BuilderPipeParams) => {
   return params;
 };
 
-const writeAfterDepLines = (params: BuilderPipeParams) => {
+const writeAfterDepLines = (params) => {
   const dependencyPriority = params.dependencyPriority;
 
   params.priorityArray
@@ -66,7 +57,7 @@ const writeAfterDepLines = (params: BuilderPipeParams) => {
   return params;
 };
 
-const addNpmScriptsToScript = (params: BuilderPipeParams) => {
+const addNpmScriptsToScript = (params) => {
   const scripts = params.builder.getScripts();
 
   if (scripts.size > 0) {
@@ -75,28 +66,25 @@ const addNpmScriptsToScript = (params: BuilderPipeParams) => {
   return params;
 };
 
-const isExtension = (obj: Extension | Line): obj is Extension => {
+const isExtension = (obj) => {
   return (
-    (obj as Extension).script !== undefined ||
-    (obj as Extension).devDependencies !== undefined ||
-    (obj as Extension).dependencies !== undefined ||
-    (obj as Extension).additionalExecutions !== undefined
+    obj.script !== undefined ||
+    obj.devDependencies !== undefined ||
+    obj.dependencies !== undefined ||
+    obj.additionalExecutions !== undefined
   );
 };
 
-const isLine = (obj: Extension | Line): obj is Line => {
-  return (obj as Line).text !== undefined;
+const isLine = (obj) => {
+  return obj.text !== undefined;
 };
 
-const isBeforeDependencies = (
-  extension: Extension | Line,
-  dependencyPriority: number
-) => {
+const isBeforeDependencies = (extension, dependencyPriority) => {
   if (extension.priority === undefined) return false;
   return extension.priority <= dependencyPriority;
 };
 
-const assignLineExtension = (lineExt: Extension | Line, script: Script) => {
+const assignLineExtension = (lineExt, script) => {
   if (isExtension(lineExt)) {
     if (lineExt.script) script.writeLine(lineExt.script);
     return;
@@ -107,14 +95,12 @@ const assignLineExtension = (lineExt: Extension | Line, script: Script) => {
   }
 };
 
-type PipeFunc = (params: BuilderPipeParams) => BuilderPipeParams;
-
 const scriptBuilderPipe =
-  (...fns: PipeFunc[]) =>
-  (params: BuilderPipeParams) =>
+  (...fns) =>
+  (params) =>
     fns.reduce((acc, fn) => fn(acc), params);
 
-const buildScriptPipe = (params: BuilderPipeParams) => {
+const buildScriptPipe = (params) => {
   return scriptBuilderPipe(
     sortByPriority,
     writeBeforeDepLines,

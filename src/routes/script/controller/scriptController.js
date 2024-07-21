@@ -1,8 +1,7 @@
 import express from "express";
-import scriptService from "../service/scriptService";
-import { ScriptRequest } from "../types/scriptRequest";
-import supportedServices from "../constants/serviceProvider";
-import { pkgService } from "../service/pkgService";
+import scriptService from "../service/scriptService.js";
+import supportedServices from "../constants/serviceProvider.js";
+import { pkgService } from "../service/pkgService.js";
 
 const router = express.Router();
 
@@ -15,7 +14,7 @@ router.get("/services", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const scriptRequest = req.body as ScriptRequest;
+  const scriptRequest = req.body;
 
   const { success, fileData, additionalData } =
     scriptService.createScript(scriptRequest);
@@ -30,7 +29,7 @@ router.post("/", (req, res) => {
 });
 
 router.post("/cli", (req, res) => {
-  const scriptRequest = req.body as ScriptRequest;
+  const scriptRequest = req.body;
 
   const { success, cliCommands, additionalData } =
     scriptService.createCliCommands(scriptRequest);

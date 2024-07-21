@@ -1,23 +1,15 @@
 import fs from "fs";
-import { createDir, execute, writeFile } from "../script-gen/scriptActions";
-import { PRE_SCRIPTS } from "../../constants/paths";
-import { Extension } from "../script-builder/ScriptBuilder";
+import { createDir, execute, writeFile } from "../script-gen/scriptActions.js";
+import { PRE_SCRIPTS } from "../../constants/paths.js";
 
-type ExtensionParams = {
-  priority?: number;
-};
-
-const node = (params?: ExtensionParams): Extension => {
+const node = (params) => {
   return {
     script: execute("npm init -y"),
     priority: params?.priority,
   };
 };
 
-type ParamsWithTs = ExtensionParams & {
-  ts: boolean;
-};
-const eslint = (params: ParamsWithTs): Extension => {
+const eslint = (params) => {
   const { ts } = params;
 
   const devDependencies = ["eslint", "@eslint/js"];
@@ -40,7 +32,7 @@ const eslint = (params: ParamsWithTs): Extension => {
   };
 };
 
-const tsc = (params?: ExtensionParams): Extension => {
+const tsc = (params) => {
   return {
     script: execute("npx tsc --init"),
     priority: params?.priority,
@@ -54,10 +46,7 @@ const tsc = (params?: ExtensionParams): Extension => {
   };
 };
 
-const env = (
-  envVars: Map<string, string>,
-  params?: ExtensionParams
-): Extension => {
+const env = (envVars, params) => {
   const vars = Array.from(envVars)
     .map(([key, value]) => `${key}=${value}`)
     .join("\n");
@@ -68,7 +57,7 @@ const env = (
   };
 };
 
-const express = (params: ParamsWithTs): Extension => {
+const express = (params) => {
   const { ts } = params;
 
   const devDependencies = [];
@@ -82,7 +71,7 @@ const express = (params: ParamsWithTs): Extension => {
   };
 };
 
-const gitIgnore = (params?: ExtensionParams): Extension => {
+const gitIgnore = (params) => {
   return {
     script: writeFile(
       ".gitignore",
@@ -92,7 +81,7 @@ const gitIgnore = (params?: ExtensionParams): Extension => {
   };
 };
 
-const nodemon = (params?: ExtensionParams): Extension => {
+const nodemon = (params) => {
   return {
     script: writeFile(
       "nodemon.json",
@@ -103,7 +92,7 @@ const nodemon = (params?: ExtensionParams): Extension => {
   };
 };
 
-const srcDir = (params?: ExtensionParams): Extension => {
+const srcDir = (params) => {
   return {
     script: createDir("./src"),
     priority: params?.priority,

@@ -1,7 +1,7 @@
 import fs from "fs";
-import Script from "../script-builder/Script";
-import { execute } from "./scriptActions";
-import { PRE_SCRIPTS } from "../../constants/paths";
+import Script from "../script-builder/Script.js";
+import { execute } from "./scriptActions.js";
+import { PRE_SCRIPTS } from "../../constants/paths.js";
 
 // /pre-scripts/actionImports.cjs
 // export const actionImports = () => {
@@ -15,7 +15,7 @@ import { PRE_SCRIPTS } from "../../constants/paths";
 //   return fs.readFileSync(PRE_SCRIPTS + "/executors.cjs", "utf8");
 // };
 
-export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
+export const addPackageJsonScripts = (scriptMap) => {
   const script = new Script();
 
   const scriptsString = `const scripts = new Map([
@@ -33,18 +33,18 @@ export const addPackageJsonScripts = (scriptMap: Map<string, string>) => {
   return script;
 };
 
-export const installDependenciesScript = (dependencies: string[]) => {
+export const installDependenciesScript = (dependencies) => {
   return execute(installDependenciesString(dependencies));
 };
 
-export const installDependenciesString = (dependencies: string[]) => {
+export const installDependenciesString = (dependencies) => {
   return `npm i -S ${dependencies.join(" ")}`;
 };
 
-export const installDevDependenciesScript = (devDependencies: string[]) => {
+export const installDevDependenciesScript = (devDependencies) => {
   return execute(installDevDependenciesString(devDependencies));
 };
 
-export const installDevDependenciesString = (devDependencies: string[]) => {
+export const installDevDependenciesString = (devDependencies) => {
   return `npm i -D ${devDependencies.join(" ")}`;
 };

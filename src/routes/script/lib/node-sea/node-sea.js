@@ -2,7 +2,7 @@ import os, { tmpdir } from "os";
 import path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
-import logger from "../../../../lib/logger";
+import logger from "../../../../lib/logger.js";
 
 const targets = {
   win: "win-x64",
@@ -10,15 +10,16 @@ const targets = {
   linux: "linux-x64",
 };
 
-type NodeSeaParams = {
-  fileName: string;
-  fileContent: string;
-  binDir?: string;
-  tempDir?: string;
-  targetSig?: keyof typeof targets;
-};
+// type NodeSeaParams = {
+//   fileName: string;
+//   fileContent: string;
+//   binDir?: string;
+//   tempDir?: string;
+//   targetSig?: keyof typeof targets;
+// };
 
-export default function createNodeSea(params: NodeSeaParams) {
+export default function createNodeSea(params) {
+  // export default function createNodeSea(params: NodeSeaParams) {
   const { binDir, targetSig, ...rest } = params;
 
   const seaEx = sea({
@@ -28,14 +29,15 @@ export default function createNodeSea(params: NodeSeaParams) {
   return seaEx.execute();
 }
 
-const sea = (params: NodeSeaParams) => {
+const sea = (params) => {
+  // const sea = (params: NodeSeaParams) => {
   const { fileName, fileContent, binDir, tempDir } = params;
 
   const uniqueFileName = `${getRandNumber(10000, 99999)}-${fileName}`;
   const blobName = "sea-prep.blob";
   const configName = "sea-config.json";
 
-  const createdFiles: string[] = [];
+  const createdFiles = [];
 
   const pathParams = {
     fileName: uniqueFileName,
@@ -77,25 +79,24 @@ const sea = (params: NodeSeaParams) => {
     logger(`Copied node binary to ${paths.exePath}`);
   };
 
-  const injectBlob = () => {
+  const injectBlob = async () => {
+    // await inject(paths.exePath, paths.blobPath, "NODE_SEA_BLOB");
     execSync(
-      `sudo npx postject ${paths.exePath} NODE_SEA_BLOB ${paths.blobPath} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`
+      `npx postject ${paths.exePath} NODE_SEA_BLOB ${paths.blobPath} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`
     );
     logger(`Injected blob into ${paths.exePath}`);
   };
 
-  const createExe = () => {
+  const createExe = async () => {
     try {
       transcribeProgram();
       generateConfig();
       generateSeaBlob();
       generateExeFromNodeBinary();
-      injectBlob();
+      await injectBlob();
       return true;
     } catch (e) {
-      const error = e as Error;
-      logger(error.message, "error");
-      console.error(e);
+      logger(e, "error");
       clearFolderAsync(paths.tmpDir, createdFiles);
       return false;
     }
@@ -114,8 +115,8 @@ const sea = (params: NodeSeaParams) => {
     return stream;
   };
 
-  const execute = () => {
-    const created = createExe();
+  const execute = async () => {
+    const created = await createExe();
     if (created) return streamExe();
   };
 
@@ -124,7 +125,7 @@ const sea = (params: NodeSeaParams) => {
   };
 };
 
-const getTargetBinDir = (binDir?: string, targetSig?: string) => {
+const getTargetBinDir = (binDir, targetSig) => {
   if (binDir === undefined) return undefined;
 
   const files = fs.readdirSync(binDir);
@@ -133,8 +134,8 @@ const getTargetBinDir = (binDir?: string, targetSig?: string) => {
     throw new Error("No prebuilt binaries found in the specified directory");
   }
 
-  let platform: string;
-  let arch: string;
+  let platform;
+  let arch;
 
   if (targetSig) {
     [platform, arch] = targetSig.split("-");
@@ -189,15 +190,16 @@ const getOsInfo = () => {
   return { platform, arch };
 };
 
-type FolderPathParams = {
-  fileName: string;
-  configName: string;
-  blobName: string;
-  tempDir?: string;
-  binDir?: string;
-};
+// type FolderPathParams = {
+//   fileName: string,
+//   configName: string,
+//   blobName: string,
+//   tempDir?: string,
+//   binDir?: string,
+// };
 
-const createFolderPaths = (params: FolderPathParams) => {
+const createFolderPaths = (params) => {
+// const createFolderPaths = (params: FolderPathParams) => {
   const folderLoc = params.tempDir || tmpdir();
   logger(folderLoc);
   return {
@@ -216,11 +218,13 @@ const getRandNumber = (num1 = 0, num2 = 1) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const normalizeFileName = (fileName: string) => fileName.split(".")[0];
+const normalizeFileName = (fileName) => fileName.split(".")[0];
 
 //TODO: Impl logic to clear folder of only files created by this script
-const clearFolderAsync = (dir: string, filesToDelete: string[]) => {
-  const deleteIfExists = (path: string) => {
+const clearFolderAsync = (dir, filesToDelete) => {
+  const deleteIfExists = (path) => {
+  //   const clearFolderAsync = (dir: string, filesToDelete: string[]) => {
+  // const deleteIfExists = (path: string) => {
     fs.existsSync(path) && fs.unlinkSync(path);
   };
   fs.readdir(dir, (err, files) => {

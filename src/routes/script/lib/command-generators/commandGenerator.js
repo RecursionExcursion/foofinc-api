@@ -1,10 +1,9 @@
-import { ScriptRequest } from "../../types/scriptRequest";
 import {
   installDependenciesString,
   installDevDependenciesString,
-} from "../script-gen/scriptGenHelpers";
+} from "../script-gen/scriptGenHelpers.js";
 
-const generateCliCommands = (scriptRequest: ScriptRequest): string[] => {
+const generateCliCommands = (scriptRequest) => {
   const commands = [];
 
   if (scriptRequest.prodDependencies) {

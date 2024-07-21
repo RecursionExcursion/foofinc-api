@@ -1,21 +1,14 @@
-import { ScriptRequest } from "../../../types/scriptRequest";
-import extensions from "../../add-ons/addOns";
-import { runtimes } from "../../builds";
-import { builds } from "../../builds";
-import { ScriptBuilder } from "../../script-builder/ScriptBuilder";
-import { execute } from "../../script-gen/scriptActions";
+import extensions from "../../add-ons/addOns.js";
+import { runtimes } from "../../builds.js";
+import { builds } from "../../builds.js";
+import { execute } from "../../script-gen/scriptActions.js";
 
-type PipeParams = {
-  builder: ScriptBuilder;
-  request: ScriptRequest;
-};
-
-const addBuild: PipeFunc = ({ builder, request }) => {
+const addBuild = ({ builder, request }) => {
   if (!request.build) {
     return { builder, request };
   }
 
-  const [runtime, framework] = request.build!.toLowerCase().split("-");
+  const [runtime, framework] = request.build.toLowerCase().split("-");
 
   if (!(runtime in runtimes)) {
     throw new Error(`Invalid runtime: ${runtime}`);
@@ -55,42 +48,40 @@ const addBuild: PipeFunc = ({ builder, request }) => {
   return { builder, request };
 };
 
-const addProdDependencies: PipeFunc = ({ builder, request }) => {
+const addProdDependencies = ({ builder, request }) => {
   if (request.prodDependencies && request.prodDependencies.length) {
     builder.addDependencies(...request.prodDependencies);
   }
   return { builder, request };
 };
 
-const addDevDependencies: PipeFunc = ({ builder, request }) => {
+const addDevDependencies = ({ builder, request }) => {
   if (request.devDependencies && request.devDependencies.length) {
     builder.addDevDependencies(...request.devDependencies);
   }
   return { builder, request };
 };
 
-const addScripts: PipeFunc = ({ builder, request }) => {
+const addScripts = ({ builder, request }) => {
   if (request.scripts) {
     builder.addScriptMap(request.scripts);
   }
   return { builder, request };
 };
 
-const addEnvVars: PipeFunc = ({ builder, request }) => {
+const addEnvVars = ({ builder, request }) => {
   if (request.envVars) {
     builder.addExtension(extensions.env(request.envVars));
   }
   return { builder, request };
 };
 
-type PipeFunc = (params: PipeParams) => PipeParams;
-
 const scriptGenPipe =
-  (...fns: PipeFunc[]) =>
-  (params: PipeParams) =>
+  (...fns) =>
+  (params) =>
     fns.reduce((acc, fn) => fn(acc), params);
 
-const genericScriptPipe = (params: PipeParams) => {
+const genericScriptPipe = (params) => {
   return scriptGenPipe(
     addBuild,
     addProdDependencies,

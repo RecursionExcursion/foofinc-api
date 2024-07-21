@@ -1,15 +1,12 @@
-import extensions from "../add-ons/addOns";
-import { ScriptBuilder } from "../script-builder/ScriptBuilder";
-import fs from "fs";
-import { writeFile } from "../script-gen/scriptActions";
-import { PRE_SCRIPTS } from "../../constants/paths";
+import extensions from "../add-ons/addOns.js";
+import { ScriptBuilder } from "../script-builder/ScriptBuilder.js";
 
-export default function generateExpressScript(): string {
-  const dependencies: string[] = [];
-  const devDependencies: string[] = [];
+export default function generateExpressScript() {
+  const dependencies = [];
+  const devDependencies = [];
 
   const PORT = 8080;
-  const envVars = new Map<string, string>();
+  const envVars = new Map();
   envVars.set("PORT", `${PORT}`);
 
   const scripts = new Map([

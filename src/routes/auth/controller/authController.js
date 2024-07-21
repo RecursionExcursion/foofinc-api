@@ -1,5 +1,5 @@
 import express from "express";
-import { generateAccessToken } from "../../../lib/auth";
+import { generateAccessToken } from "../../../lib/auth.js";
 
 const router = express.Router();
 
