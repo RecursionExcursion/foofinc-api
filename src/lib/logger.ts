@@ -4,6 +4,6 @@ const logger = {
   error: console.error,
 };
 
-const log = (text: string, key: keyof typeof logger) => logger[key](text);
+const log = (text: string, key: keyof typeof logger = "log") => logger[key](text);
 
 export default log;

@@ -120,6 +120,11 @@ const getTargetBinDir = (binDir: string | undefined) => {
     return file.includes(platform) && file.includes(arch);
   });
 
+  //TODO logs
+  logger(binDir);
+  files.forEach((file) => logger(file));
+  if (targetBinary) logger(targetBinary);
+
   if (targetBinary === undefined) {
     throw new Error(
       "No binary found for the current platform and architecture, " +
@@ -186,6 +191,7 @@ const getRandNumber = (num1 = 0, num2 = 1) => {
 
 const normalizeFileName = (fileName: string) => fileName.split(".")[0];
 
+//TODO: Impl logic to clear folder of only files created by this script
 const clearFolderAsync = (dir: string) => {
   const deleteIfExists = (path: string) => {
     fs.existsSync(path) && fs.unlinkSync(path);
