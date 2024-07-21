@@ -79,11 +79,11 @@ const sea = (params: NodeSeaParams) => {
 
   const injectBlob = () => {
     execSync(
-      `npx postject ${paths.exePath} NODE_SEA_BLOB ${paths.blobPath} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`
+      `sudo npx postject ${paths.exePath} NODE_SEA_BLOB ${paths.blobPath} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`
     );
     logger(`Injected blob into ${paths.exePath}`);
   };
-  
+
   const createExe = () => {
     try {
       transcribeProgram();
