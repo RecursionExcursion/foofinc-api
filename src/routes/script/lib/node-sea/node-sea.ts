@@ -121,6 +121,8 @@ const getTargetBinDir = (binDir: string | undefined) => {
   });
 
   //TODO logs
+  logger(platform);
+  logger(arch);
   logger(binDir);
   files.forEach((file) => logger(file));
   if (targetBinary) logger(targetBinary);
