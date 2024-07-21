@@ -50,6 +50,7 @@ const sea = (params: NodeSeaParams) => {
   const transcribeProgram = () => {
     fs.writeFileSync(paths.jsFilePath, fileContent);
     createdFiles.push(paths.jsFilePath);
+    logger(`Transcribed program to file ${paths.jsFilePath}`);
   };
 
   const generateConfig = () => {
@@ -60,23 +61,27 @@ const sea = (params: NodeSeaParams) => {
 
     fs.writeFileSync(paths.configPath, JSON.stringify(config, null, 2));
     createdFiles.push(paths.configPath);
+    logger(`Generated config file at ${paths.configPath}`);
   };
 
   const generateSeaBlob = () => {
     execSync(`node --experimental-sea-config ${paths.configPath}`);
     createdFiles.push(paths.blobPath);
+    logger(`Generated sea blob at ${paths.blobPath}`);
   };
 
   const generateExeFromNodeBinary = () => {
     const binaryLoc = paths.binDir ?? process.execPath;
     fs.copyFileSync(binaryLoc, paths.exePath);
     createdFiles.push(paths.exePath);
+    logger(`Copied node binary to ${paths.exePath}`);
   };
 
   const injectBlob = () => {
     execSync(
       `npx postject ${paths.exePath} NODE_SEA_BLOB ${paths.blobPath} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`
     );
+    logger(`Injected blob into ${paths.exePath}`);
   };
   const createExe = () => {
     try {
