@@ -49,8 +49,9 @@ router.get("/pkg", async (req, res) => {
     return res.status(500).json({ message: "Error creating exe" });
   }
 
+  //TODO - Add headers for download
   // res.setHeader("Content-Encoding", "gzip");
-  res.setHeader("Content-Encoding", "gzip");
+  // res.setHeader("Content-Encoding", "gzip");
   // res.setHeader("Transfer-Encoding", "chunked");
 
   try {

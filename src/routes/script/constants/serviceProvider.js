@@ -1,11 +1,20 @@
 import { builds } from "../lib/builds.js";
+/**
+ *@typedef {Object} Build
+ *@property {string} runtime - Runtime of the build
+ *@property {string[]} libraries - Framework of the build
+ */
 
 const createRuntimeServices = (builds) => {
+  
+  /** @type {Build} */
+  /** @type {Build} */
   const nodeService = {
     runtime: "Node.js",
     libraries: [],
   };
 
+  /** @type {Build} */
   const browserService = {
     runtime: "Browser",
     libraries: [],
@@ -13,7 +22,7 @@ const createRuntimeServices = (builds) => {
 
   builds.forEach((build) => {
     if (build.runtime === "node") {
-      build
+      build;
       nodeService.libraries.push(build.framework);
     }
     if (build.runtime === "browser") {
@@ -32,6 +41,13 @@ const services = createRuntimeServices(builds);
 
 const templates = [];
 
+/**
+ * @type {{
+ *   packageManagers: string[],
+ *   services: Object[],
+ *   templates: string[]
+ * }}
+ */
 const supportedServices = {
   packageManagers,
   services,
