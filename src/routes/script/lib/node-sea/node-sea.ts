@@ -142,11 +142,6 @@ const getTargetBinDir = (binDir?: string, targetSig?: string) => {
     return file.includes(platform) && file.includes(arch);
   });
 
-  //TODO logs
-  logger(targetSig ?? "No targetSig provided, using current OS");
-  logger(platform);
-  logger(arch);
-  logger(binDir);
   files.forEach((file) => logger(file));
   if (targetBinary) logger(targetBinary);
 
@@ -198,6 +193,7 @@ type FolderPathParams = {
 
 const createFolderPaths = (params: FolderPathParams) => {
   const folderLoc = params.tempDir || tmpdir();
+  logger(folderLoc);
   return {
     jsFilePath: path.join(folderLoc, params.fileName + ".js"),
     configPath: path.join(folderLoc, params.configName),
