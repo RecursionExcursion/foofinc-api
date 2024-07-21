@@ -50,7 +50,15 @@ router.get("/pkg", async (req, res) => {
     return res.status(500).json({ message: "Error creating exe" });
   }
 
-  stream.pipe(res);
+  // res.setHeader("Content-Encoding", "gzip");
+  res.setHeader("Content-Encoding", "gzip");
+  // res.setHeader("Transfer-Encoding", "chunked");
+
+  try {
+    stream.pipe(res);
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 export default router;

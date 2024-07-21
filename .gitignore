@@ -37,3 +37,7 @@ next-env.d.ts
   
 .env
 ./build
+
+/rest-client
+
+/temp
