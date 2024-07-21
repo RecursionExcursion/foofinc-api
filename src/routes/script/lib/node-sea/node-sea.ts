@@ -2,6 +2,7 @@ import os, { tmpdir } from "os";
 import path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
+import logger from "../../../../lib/logger";
 
 type NodeSeaParams = {
   fileName: string;
@@ -73,6 +74,8 @@ const sea = (params: NodeSeaParams) => {
       injectBlob();
       return true;
     } catch (e) {
+      const error = e as Error;
+      logger(error.message, "error");
       console.error(e);
       clearFolderAsync(paths.tmpDir);
       return false;
@@ -138,7 +141,7 @@ const osMap = new Map([
   ["win32", "win"],
   ["darwin", "darwin"],
   ["linux", "linux"],
-  // Unimlemented os types
+  // Unimplemented os types
   // ["aix", "aix"],
   // ["freebsd", "freebsd"],
   // ["openbsd", "openbsd"],

@@ -1,3 +1,4 @@
+import logger from "../../../lib/logger";
 import createNodeSea from "../lib/node-sea/node-sea";
 import zlib from "zlib";
 
@@ -13,7 +14,9 @@ export const pkgService = async () => {
     if (!seaExeStream) return;
 
     return seaExeStream.pipe(zlib.createGzip());
-  } catch (error) {
+  } catch (e) {
+    const error = e as Error;
+    logger(error.message, "error");
     return;
   }
 };
