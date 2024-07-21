@@ -12,6 +12,10 @@ const expectedStructure = {
   envVars: "Map<string, string>",
 };
 
+/**
+*@param {ScriptRequest} scriptRequest
+*@returns {}
+*/
 const createScript = (scriptRequest) => {
   if (!checkIfRequestIsValid(scriptRequest)) {
     return {
