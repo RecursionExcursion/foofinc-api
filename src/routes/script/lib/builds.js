@@ -1,7 +1,4 @@
-export const runtimes = {
-  node: "node",
-  browser: "browser",
-};
+/** @typedef {'node' | 'browser'} JsRuntime */
 
 /**
  *@typedef {Object} Build
@@ -9,7 +6,7 @@ export const runtimes = {
  *@property {string} [cliCommand] - CLI command for the build
  *@property {string[]} [prodDependencies] - Production dependencies for the build
  *@property {string[]} [devDependencies] - Development dependencies for the build
- *@property {string} [runtime] - Runtime of the build
+ *@property {JsRuntime} [runtime] - Runtime of the build
  */
 
 /** @type {Build} */

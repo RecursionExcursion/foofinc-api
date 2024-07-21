@@ -8,7 +8,6 @@ import { builds } from "../lib/builds.js";
 const createRuntimeServices = (builds) => {
   
   /** @type {Build} */
-  /** @type {Build} */
   const nodeService = {
     runtime: "Node.js",
     libraries: [],
@@ -22,7 +21,6 @@ const createRuntimeServices = (builds) => {
 
   builds.forEach((build) => {
     if (build.runtime === "node") {
-      build;
       nodeService.libraries.push(build.framework);
     }
     if (build.runtime === "browser") {
