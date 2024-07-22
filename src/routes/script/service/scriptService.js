@@ -4,18 +4,23 @@ import generateScript from "../lib/script-generators/scriptGenerator.js";
 //Use ts here to ensure the keys are the same as ScriptRequest
 //TODO make dyanimc so it pulls from builds.ts
 const expectedStructure = {
-  prebuildType: `express>`,
+  prebuildType: `express`,
   build: `<runtime>-<framework>`,
-  prodDependencies: "Array<string>",
-  devDependencies: "Array<string>",
+  prodDependencies: "string[]",
+  devDependencies: "string[]",
   scripts: "Map<string, string>",
   envVars: "Map<string, string>",
 };
 
 /**
-*@param {ScriptRequest} scriptRequest
-*@returns {}
-*/
+ *@typedef {Object} ScriptServiceResponse
+ *@property {boolean} success
+ *@property {{ script:string; fileName:string }} [fileData]
+ *@property {string[]} [cliCommands]
+ *@property {unknown} [additionalData]
+ */
+
+/** @param {ScriptRequest} scriptRequest @returns {ScriptServiceResponse} */
 const createScript = (scriptRequest) => {
   if (!checkIfRequestIsValid(scriptRequest)) {
     return {
@@ -36,6 +41,7 @@ const createScript = (scriptRequest) => {
   return { success: true, fileData: { script, fileName } };
 };
 
+/** @param {ScriptRequest} scriptRequest @returns {ScriptServiceResponse} */
 const createCliCommands = (scriptRequest) => {
   if (!checkIfRequestIsValid(scriptRequest)) {
     return { success: false, additionalData: expectedStructure };
@@ -46,6 +52,10 @@ const createCliCommands = (scriptRequest) => {
   return { success: true, cliCommands: commands };
 };
 
+/**
+ * @param {ScriptRequest} scriptRequest
+ * @returns {boolean}
+ */
 const checkIfRequestIsValid = (scriptRequest) => {
   return Object.values(scriptRequest).some((val) => val !== undefined);
 };
