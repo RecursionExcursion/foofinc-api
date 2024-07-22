@@ -1,5 +1,11 @@
 /** @typedef {'node' | 'browser'} JsRuntime */
 
+/** @type {{ [key: string]: JsRuntime }} */
+export const runtimes = {
+  node: "node",
+  browser: "browser",
+};
+
 /**
  *@typedef {Object} Build
  *@property {string} framework - Framework of the build

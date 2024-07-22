@@ -1,6 +1,5 @@
 import extensions from "../../add-ons/addOns.js";
-import { runtimes } from "../../builds.js";
-import { builds } from "../../builds.js";
+import { builds, runtimes } from "../../builds.js";
 import { execute } from "../../script-gen/scriptActions.js";
 
 const addBuild = ({ builder, request }) => {
