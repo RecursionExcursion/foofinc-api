@@ -20,12 +20,13 @@ app.get("/", (req, res) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
+  /** @param {string} page @returns {string} */
   const getPagePathFromRoot = (page) => path.join(process.cwd(), "pages", page);
 
   if (token) {
-    res.sendFile(getPagePathFromRoot({ page: "/home-auth.html" }));
+    res.sendFile(getPagePathFromRoot("/home-auth.html"));
   } else {
-    res.sendFile(getPagePathFromRoot({ page: "/home-no-auth.html" }));
+    res.sendFile(getPagePathFromRoot("/home-no-auth.html"));
   }
 });
 
